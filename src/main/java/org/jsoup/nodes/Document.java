@@ -94,20 +94,23 @@ public class Document extends Element {
 
     /**
      Get the string contents of the document's {@code title} element.
+     Made changes to the implemtation of the code.
      @return Trimmed title, or empty string if none set.
+
      */
     public String title() {
         // title is a preserve whitespace tag (for document output), but normalised here
-        Element titleEl = getElementsByTag("title").first();
-
-       List<TextNode> all_text = titleEl.textNodes();
-
+        Elements titleEl = getElementsByTag("title");
+        if (titleEl == null)
+            return "";
+        List<TextNode> allText = titleEl.textNodes();
 
         StringBuilder stringBuilder = new StringBuilder();
-        for(TextNode textNode:all_text){
+        for(TextNode textNode:allText){
             if(!textNode.text().equals(" "))
             stringBuilder.append(textNode.text());
         }
+
         return stringBuilder.toString();
     }
 
