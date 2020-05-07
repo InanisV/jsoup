@@ -1368,5 +1368,9 @@ public class HtmlParserTest {
         Document doc = Jsoup.parseLegalTag(html);
         doc.outputSettings().prettyPrint(false);
         assertEquals("<html><head></head><body><p>Try &lt;aaa&gt;jsoup&lt;/aaa&gt;</p><div>&lt;hello&gt;</div></body></html>", doc.outerHtml());
+        html = "<sustech><p>Try</p>";
+        doc = Jsoup.parseLegalTag(html);
+        doc.outputSettings().prettyPrint(false);
+        assertEquals("<html><head></head><body>&lt;sustech&gt;<p>Try</p></body></html>", doc.outerHtml());
     }
 }

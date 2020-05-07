@@ -251,6 +251,10 @@ public class Element extends Node {
         return parents;
     }
 
+    /**
+     * Get this element's find the nearest parent using a specific query, up to the document root.
+     * @return this element's nearest parents.
+     */
     public Element firstParent(String query) {
         Elements parents = parents();
         return parents.select(query).first();

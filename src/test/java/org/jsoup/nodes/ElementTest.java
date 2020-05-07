@@ -1597,4 +1597,13 @@ public class ElementTest {
         assertEquals(2, row.childrenSize());
         assertEquals(5, row.childNodeSize());
     }
+
+    @Test
+    public void firstParent() {
+        Document doc = Jsoup.parse("<div><ul><p>hi</p><p>Hello</p></ul></div><p>There</p>");
+        Element p0 = doc.select("p").get(0);
+
+        assertEquals("div", p0.firstParent("div").tagName());
+        assertEquals("ul", p0.firstParent("ul").tagName());
+    }
 }
