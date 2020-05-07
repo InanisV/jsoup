@@ -29,7 +29,7 @@ enum HtmlTreeBuilderState {
                 // todo: quirk state check on doctype ids
                 Token.Doctype d = t.asDoctype();
                 DocumentType doctype = new DocumentType(
-                    tb.settings.normalizeTag(d.getName()), d.getPublicIdentifier(), d.getSystemIdentifier());
+                        tb.settings.normalizeTag(d.getName()), d.getPublicIdentifier(), d.getSystemIdentifier());
                 doctype.setPubSysKey(d.getPubSysKey());
                 tb.getDocument().appendChild(doctype);
                 if (d.isForceQuirks())
@@ -432,6 +432,15 @@ enum HtmlTreeBuilderState {
                     el = tb.insert(startTag);
                     tb.pushActiveFormattingElements(el);
                     break;
+
+                case "template":
+                    if (tb.getDocument().quirksMode() != Document.QuirksMode.quirks && tb.inButtonScope("p")) {
+                        tb.processEndTag("p");
+                    }
+                    tb.insert(startTag);
+                    tb.framesetOk(false);
+                    tb.transition(InTableBody);
+                    break;
                 case "table":
                     if (tb.getDocument().quirksMode() != Document.QuirksMode.quirks && tb.inButtonScope("p")) {
                         tb.processEndTag("p");
@@ -440,6 +449,7 @@ enum HtmlTreeBuilderState {
                     tb.framesetOk(false);
                     tb.transition(InTable);
                     break;
+
                 case "input":
                     tb.reconstructFormattingElements();
                     el = tb.insertEmpty(startTag);
@@ -474,8 +484,8 @@ enum HtmlTreeBuilderState {
                     tb.processStartTag("label");
                     // hope you like english.
                     String prompt = startTag.attributes.hasKey("prompt") ?
-                        startTag.attributes.get("prompt") :
-                        "This is a searchable index. Enter search keywords: ";
+                            startTag.attributes.get("prompt") :
+                            "This is a searchable index. Enter search keywords: ";
 
                     tb.process(new Token.Character().data(prompt));
 
@@ -889,7 +899,7 @@ enum HtmlTreeBuilderState {
                 // check tags in Constants
                 Field[] fields = Constants.class.getDeclaredFields();
                 Constants _const = new Constants();
-                for (Field item: fields) {
+                for (Field item : fields) {
                     String[] tags = (String[]) item.get(_const);
                     if (inSorted(tagName, tags))
                         return true;
@@ -898,8 +908,8 @@ enum HtmlTreeBuilderState {
                 // check tags in Tag.java
                 Tag _tag = Tag.valueOf("noMeaning");
                 String[] checkList = {"blockTags", "inlineTags", "emptyTags", "formatAsInlineTags",
-                "preserveWhitespaceTags", "formListedTags", "formSubmitTags"};
-                for (String name: checkList) {
+                        "preserveWhitespaceTags", "formListedTags", "formSubmitTags"};
+                for (String name : checkList) {
                     Field field = Tag.class.getDeclaredField(name);
                     field.setAccessible(true);
                     if (inSorted(tagName, (String[]) field.get(_tag))) {
@@ -1087,7 +1097,7 @@ enum HtmlTreeBuilderState {
             } else if ((
                     t.isStartTag() && inSorted(t.asStartTag().normalName(), InCellCol) ||
                             t.isEndTag() && t.asEndTag().normalName().equals("table"))
-                    ) {
+            ) {
                 tb.error(this);
                 boolean processed = tb.processEndTag("caption");
                 if (processed)
@@ -1438,7 +1448,7 @@ enum HtmlTreeBuilderState {
                 tb.error(this);
                 tb.processEndTag("select");
                 return tb.process(t);
-            } else if (t.isEndTag() && inSorted(t.asEndTag().normalName(),InSelecTableEnd )) {
+            } else if (t.isEndTag() && inSorted(t.asEndTag().normalName(), InSelecTableEnd)) {
                 tb.error(this);
                 if (tb.inTableScope(t.asEndTag().normalName())) {
                     tb.processEndTag("select");
@@ -1564,7 +1574,7 @@ enum HtmlTreeBuilderState {
                 tb.insert(t.asCharacter());
                 tb.stack.add(html);
                 tb.stack.add(html.selectFirst("body"));
-            }else if (t.isEOF()) {
+            } else if (t.isEOF()) {
                 // nice work chuck
             } else {
                 tb.error(this);
@@ -1634,12 +1644,12 @@ enum HtmlTreeBuilderState {
         static final String[] InHeadRaw = new String[]{"noframes", "style"};
         static final String[] InHeadEnd = new String[]{"body", "br", "html"};
         static final String[] AfterHeadBody = new String[]{"body", "html"};
-        static final String[] BeforeHtmlToHead = new String[]{"body", "br", "head", "html", };
+        static final String[] BeforeHtmlToHead = new String[]{"body", "br", "head", "html",};
         static final String[] InHeadNoScriptHead = new String[]{"basefont", "bgsound", "link", "meta", "noframes", "style"};
         static final String[] InBodyStartToHead = new String[]{"base", "basefont", "bgsound", "command", "link", "meta", "noframes", "script", "style", "title"};
         static final String[] InBodyStartPClosers = new String[]{"address", "article", "aside", "blockquote", "center", "details", "dir", "div", "dl",
-            "fieldset", "figcaption", "figure", "footer", "header", "hgroup", "menu", "nav", "ol",
-            "p", "section", "summary", "ul"};
+                "fieldset", "figcaption", "figure", "footer", "header", "hgroup", "menu", "nav", "ol",
+                "p", "section", "summary", "ul"};
         static final String[] Headings = new String[]{"h1", "h2", "h3", "h4", "h5", "h6"};
         static final String[] InBodyStartLiBreakers = new String[]{"address", "div", "p"};
         static final String[] DdDt = new String[]{"dd", "dt"};
@@ -1650,8 +1660,8 @@ enum HtmlTreeBuilderState {
         static final String[] InBodyStartInputAttribs = new String[]{"action", "name", "prompt"};
         static final String[] InBodyStartDrop = new String[]{"caption", "col", "colgroup", "frame", "head", "tbody", "td", "tfoot", "th", "thead", "tr"};
         static final String[] InBodyEndClosers = new String[]{"address", "article", "aside", "blockquote", "button", "center", "details", "dir", "div",
-            "dl", "fieldset", "figcaption", "figure", "footer", "header", "hgroup", "listing", "menu",
-            "nav", "ol", "pre", "section", "summary", "ul"};
+                "dl", "fieldset", "figcaption", "figure", "footer", "header", "hgroup", "listing", "menu",
+                "nav", "ol", "pre", "section", "summary", "ul"};
         static final String[] InBodyEndAdoptionFormatters = new String[]{"a", "b", "big", "code", "em", "font", "i", "nobr", "s", "small", "strike", "strong", "tt", "u"};
         static final String[] InBodyEndTableFosters = new String[]{"table", "tbody", "tfoot", "thead", "tr"};
         static final String[] InTableToBody = new String[]{"tbody", "tfoot", "thead"};
@@ -1659,7 +1669,7 @@ enum HtmlTreeBuilderState {
         static final String[] InTableToHead = new String[]{"script", "style"};
         static final String[] InCellNames = new String[]{"td", "th"};
         static final String[] InCellBody = new String[]{"body", "caption", "col", "colgroup", "html"};
-        static final String[] InCellTable = new String[]{ "table", "tbody", "tfoot", "thead", "tr"};
+        static final String[] InCellTable = new String[]{"table", "tbody", "tfoot", "thead", "tr"};
         static final String[] InCellCol = new String[]{"caption", "col", "colgroup", "tbody", "td", "tfoot", "th", "thead", "tr"};
         static final String[] InTableEndErr = new String[]{"body", "caption", "col", "colgroup", "html", "tbody", "td", "tfoot", "th", "thead", "tr"};
         static final String[] InTableFoster = new String[]{"table", "tbody", "tfoot", "thead", "tr"};
