@@ -229,6 +229,28 @@ public class ParseTest {
         assertEquals(wantHtml, doc.select("[data-id=userdirectory]").outerHtml());
     }
 
+    @Test public void testParseRubyTag() {
+        String html = "<ruby>a<div><rtc><rt>b</rt></rtc></div></ruby>";
+        Document doc = Jsoup.parse(html);
+        assertEquals("<html>\n" +
+                " <head></head>\n" +
+                " <body>\n" +
+                "  <ruby>a\n" +
+                "   <div>\n" +
+                "    <rtc>\n" +
+                "     <rt>b</rt>\n" +
+                "    </rtc>\n" +
+                "   </div></ruby>\n" +
+                " </body>\n" +
+                "</html>",doc.toString().trim());
+    }
+
+    @Test public void testDivInsideRuby() {
+        String html = "<ruby><rtc><div><rt>a</rt><rtc></ruby>";
+        Document doc = Jsoup.parse(html);
+        assertTrue(doc.toString().contains("</rt>"));
+    }
+
     public static File getFile(String resourceName) {
         try {
             URL resource = ParseTest.class.getResource(resourceName);
