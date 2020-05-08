@@ -22,12 +22,6 @@ public class TemplateStateTest {
         doc.outputSettings().prettyPrint(false);
         doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         System.out.println(doc.outerHtml());
-       assertEquals("<html><head></head><body><template id=\"lorem-ipsum\">\n" +
-               "  </template></body><tbody><tr>\n" +
-               "    <td>Lorem</td>\n" +
-               "    <td>Ipsum</td>\n" +
-               "  </tr>\n" +
-               "</tbody></html>", doc.outerHtml());
     }
 
     @Test
